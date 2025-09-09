@@ -2,11 +2,18 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
 import { api } from "../lib/api.ts";
 
 const schema = z.object({
   gameType: z.enum(["TEXAS_HOLDEM", "PLO"]),
-  blinds: z.string().min(1, "Required"),
+  blinds: z
+    .string()
+    .min(1, "Required")
+    .regex(
+      /^\$?(\d+(?:\.\d+)?)\/?\$?(\d+(?:\.\d+)?)?$/,
+      "Invalid format. Use: 1/2, $1/2, or $1/$2"
+    ),
   minBuyIn: z.coerce.number().min(1),
   maxBuyIn: z.coerce.number().min(1),
   startTime: z.string().min(1),
@@ -19,30 +26,99 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export default function HostGame() {
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
       gameType: "TEXAS_HOLDEM",
     },
   });
 
+  const openDatePicker = (event: React.MouseEvent<HTMLInputElement>) => {
+    event.currentTarget.showPicker?.();
+  };
+
+  const formatBlinds = (value: string) => {
+    // Remove all $ signs and normalize the input
+    const cleaned = value.replace(/\$/g, "");
+
+    // Only format if we have both parts after the slash
+    if (cleaned.includes("/")) {
+      const parts = cleaned.split("/");
+      if (parts.length === 2) {
+        const small = parts[0].trim();
+        const big = parts[1].trim();
+
+        // Only format if both parts have content (user finished typing)
+        if (small && big) {
+          return `$${small}/$${big}`;
+        }
+      }
+    }
+
+    return value; // Return as-is if incomplete or no slash found
+  };
+
+  const handleBlindsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatBlinds(event.target.value);
+    // Only update if the formatted value is different and complete
+    if (
+      formatted !== event.target.value &&
+      formatted.includes("/") &&
+      !formatted.endsWith("/")
+    ) {
+      event.target.value = formatted;
+    }
+  };
+
   const createGame = useMutation({
-    mutationFn: (data: FormData) => api.createGame(data),
-    onSuccess: () => {
-      alert("Game created! Players will only see distance until you approve them.");
+    mutationFn: (data: FormData) => {
+      setSubmitError(null);
+      setSubmitSuccess(null);
+      return api.createGame(data);
+    },
+    onSuccess: (result) => {
+      setSubmitSuccess(
+        "Game created! Players will only see distance until you approve them."
+      );
+      setSubmitError(null);
+    },
+    onError: (error) => {
+      setSubmitError("Failed to create game. Please try again.");
+      setSubmitSuccess(null);
     },
   });
 
-  const onSubmit = (data: FormData) => {
+  const onSubmitGame = (data: FormData) => {
+    setSubmitError(null);
+    setSubmitSuccess(null);
+
     if (data.minBuyIn > data.maxBuyIn) {
-      alert("Min buy-in cannot exceed max buy-in");
+      setSubmitError("Min buy-in cannot exceed max buy-in");
       return;
     }
+
     createGame.mutate(data);
   };
 
   return (
-    <form className="form" onSubmit={handleSubmit(onSubmit)} noValidate>
+    <form className="form" onSubmit={handleSubmit(onSubmitGame)} noValidate>
+      {submitError && (
+        <div className="error-message">
+          <strong>Error:</strong> {submitError}
+        </div>
+      )}
+      {submitSuccess && (
+        <div className="success-message">
+          <strong>Success:</strong> {submitSuccess}
+        </div>
+      )}
       <div className="row">
         <label className="field">
           <span>Game Type</span>
@@ -54,7 +130,11 @@ export default function HostGame() {
 
         <label className="field">
           <span>Blinds</span>
-          <input placeholder="e.g., $1/$2" {...register("blinds")} />
+          <input
+            placeholder="e.g., 1/2, $1/2, or $1/$2"
+            {...register("blinds")}
+            onChange={handleBlindsChange}
+          />
           {errors.blinds && <em className="error">{errors.blinds.message}</em>}
         </label>
       </div>
@@ -73,12 +153,22 @@ export default function HostGame() {
       <div className="row">
         <label className="field">
           <span>Start Time</span>
-          <input type="datetime-local" {...register("startTime")} />
+          <input
+            type="datetime-local"
+            {...register("startTime")}
+            onClick={openDatePicker}
+            style={{ cursor: "pointer" }}
+          />
         </label>
         <label className="field">
           <span>Address (private)</span>
-          <input placeholder="Exact address (kept private)" {...register("address")} />
-          {errors.address && <em className="error">{errors.address.message}</em>}
+          <input
+            placeholder="Exact address (kept private)"
+            {...register("address")}
+          />
+          {errors.address && (
+            <em className="error">{errors.address.message}</em>
+          )}
         </label>
       </div>
 
@@ -95,11 +185,19 @@ export default function HostGame() {
 
       <label className="field">
         <span>Notes (optional)</span>
-        <textarea rows={3} placeholder="Any house rules, parking hints, etc." {...register("notes")} />
+        <textarea
+          rows={3}
+          placeholder="Any house rules, parking hints, etc."
+          {...register("notes")}
+        />
       </label>
 
       <div className="actions">
-        <button className="btn primary" type="submit" disabled={createGame.isPending}>
+        <button
+          className="btn primary"
+          type="submit"
+          disabled={createGame.isPending}
+        >
           {createGame.isPending ? "Creating…" : "Create Game"}
         </button>
       </div>
