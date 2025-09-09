@@ -4,14 +4,18 @@ import GameCard from "../components/GameCard";
 import { api } from "../lib/api.ts";
 
 export default function FindGame() {
-  const [coords, setCoords] = useState<{lat: number; lng: number} | null>(null);
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
+    null
+  );
   const [zip, setZip] = useState("");
   const [radiusMi, setRadiusMi] = useState(10);
+  const [requestedGames, setRequestedGames] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (!navigator.geolocation) return;
     const id = navigator.geolocation.getCurrentPosition(
-      (pos) => setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+      (pos) =>
+        setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
       () => {} // silent fail; user can enter ZIP
     );
     return () => {
@@ -26,16 +30,16 @@ export default function FindGame() {
       return zip
         ? api.searchByZip({ zip, radiusMi })
         : coords
-          ? api.searchNearby({ lat: coords.lat, lng: coords.lng, radiusMi })
-          : [];
+        ? api.searchNearby({ lat: coords.lat, lng: coords.lng, radiusMi })
+        : [];
     },
     enabled: !!coords || !!zip,
   });
 
   const requestAccess = useMutation({
     mutationFn: (gameId: string) => api.requestAccess({ gameId }),
-    onSuccess: () => {
-      alert("Request sent to host! You’ll be notified if approved.");
+    onSuccess: (_, gameId) => {
+      setRequestedGames((prev) => new Set([...prev, gameId]));
     },
   });
 
@@ -72,17 +76,29 @@ export default function FindGame() {
           </label>
 
           <div className="hint">
-            {coords ? "Using your location (with permission)." : "Enter a ZIP or allow location."}
+            {coords
+              ? "Using your location (with permission)."
+              : "Enter a ZIP or allow location."}
           </div>
         </div>
       </div>
 
       {isLoading && <p>Loading…</p>}
-      {!isLoading && data && data.length === 0 && <p>No open games found in that radius.</p>}
+      {!isLoading && data && data.length === 0 && (
+        <p>No open games found in that radius.</p>
+      )}
 
       <div className="grid">
         {data?.map((g) => (
-          <GameCard key={g.id} game={g} onRequestAccess={(id) => requestAccess.mutate(id)} />
+          <GameCard
+            key={g.id}
+            game={g}
+            onRequestAccess={(id) => requestAccess.mutate(id)}
+            isRequested={requestedGames.has(g.id)}
+            isRequesting={
+              requestAccess.isPending && requestAccess.variables === g.id
+            }
+          />
         ))}
       </div>
     </section>
