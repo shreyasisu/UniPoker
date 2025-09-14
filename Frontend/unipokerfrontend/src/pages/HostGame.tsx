@@ -78,20 +78,9 @@ export default function HostGame() {
   };
 
   const createGame = useMutation({
-    mutationFn: (data: FormData) => {
-      setSubmitError(null);
-      setSubmitSuccess(null);
-      return api.createGame(data);
-    },
-    onSuccess: (result) => {
-      setSubmitSuccess(
-        "Game created! Players will only see distance until you approve them."
-      );
-      setSubmitError(null);
-    },
-    onError: (error) => {
-      setSubmitError("Failed to create game. Please try again.");
-      setSubmitSuccess(null);
+    mutationFn: (data: FormData) => api.createGame(data),
+    onSuccess: () => {
+      alert("Game created!");
     },
   });
 

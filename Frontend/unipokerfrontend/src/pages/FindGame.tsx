@@ -23,17 +23,9 @@ export default function FindGame() {
     };
   }, []);
 
-  const { data, isLoading, refetch, isFetching } = useQuery({
-    queryKey: ["games", coords?.lat, coords?.lng, radiusMi, zip],
-    queryFn: async () => {
-      // If user entered a ZIP, prefer that. Otherwise use coords.
-      return zip
-        ? api.searchByZip({ zip, radiusMi })
-        : coords
-        ? api.searchNearby({ lat: coords.lat, lng: coords.lng, radiusMi })
-        : [];
-    },
-    enabled: !!coords || !!zip,
+  const { data, isLoading, fetchStatus, isError} = useQuery({
+    queryKey: ["games"],
+    queryFn: () => api.listGames(),
   });
 
   const requestAccess = useMutation({
@@ -50,9 +42,9 @@ export default function FindGame() {
           <button
             className="btn"
             onClick={() => refetch()}
-            disabled={isLoading || isFetching || (!coords && !zip)}
+            disabled={isLoading || fetchStatus || (!coords && !zip)}
           >
-            {isFetching ? "Searching…" : "Search"}
+            {fetchStatus ? "Searching…" : "Search"}
           </button>
 
           <label className="field">

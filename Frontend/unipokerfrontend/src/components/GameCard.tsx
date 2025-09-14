@@ -23,7 +23,11 @@ export default function GameCard({
             Starts: {new Date(game.startTime).toLocaleString()}
           </div>
         </div>
-        <div className="distance">{game.distanceMi.toFixed(1)} mi</div>
+        <div className="distance">
+          {game.distanceMi !== undefined
+            ? `${game.distanceMi.toFixed(1)} mi`
+            : "Distance unknown"}
+        </div>
       </div>
       <div className="cardRow end">
         <button

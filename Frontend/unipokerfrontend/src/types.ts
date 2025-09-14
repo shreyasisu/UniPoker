@@ -5,7 +5,7 @@ export type GamePublicCard = {
     minBuyIn: number;
     maxBuyIn: number;
     startTime: string;    // ISO
-    distanceMi: number;   // distance only, no address here
+    distanceMi?: number;   // distance only, no address here
   };
   
   export type CreateGameBody = {
