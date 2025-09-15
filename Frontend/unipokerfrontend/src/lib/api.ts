@@ -104,4 +104,14 @@ export const api = {
     const { data } = await client.get("/api/games");
     return data;
   },
+  async login(data: { email: string; password: string }) {
+    const res = await client.post("/auth/login", data);
+    return res.data; // { message: string, userId: number }
+  },
+
+  async register(data: { email: string; password: string }) {
+    const res = await client.post("/auth/register", data);
+    return res.data; // { message: string, userId: number }
+  }
+  
 };

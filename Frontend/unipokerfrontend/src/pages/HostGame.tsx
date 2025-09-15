@@ -97,99 +97,107 @@ export default function HostGame() {
   };
 
   return (
-    <form className="form" onSubmit={handleSubmit(onSubmitGame)} noValidate>
-      {submitError && (
-        <div className="error-message">
-          <strong>Error:</strong> {submitError}
+    <div className="host-game-container">
+      <form
+        className="form host-game-form"
+        onSubmit={handleSubmit(onSubmitGame)}
+        noValidate
+      >
+        {submitError && (
+          <div className="error-message">
+            <strong>Error:</strong> {submitError}
+          </div>
+        )}
+        {submitSuccess && (
+          <div className="success-message">
+            <strong>Success:</strong> {submitSuccess}
+          </div>
+        )}
+        <div className="row">
+          <label className="field">
+            <span>Game Type</span>
+            <select {...register("gameType")}>
+              <option value="TEXAS_HOLDEM">Texas Hold’em</option>
+              <option value="PLO">PLO</option>
+            </select>
+          </label>
+
+          <label className="field">
+            <span>Blinds</span>
+            <input
+              placeholder="e.g., 1/2, $1/2, or $1/$2"
+              {...register("blinds")}
+              onChange={handleBlindsChange}
+            />
+            {errors.blinds && (
+              <em className="error">{errors.blinds.message}</em>
+            )}
+          </label>
         </div>
-      )}
-      {submitSuccess && (
-        <div className="success-message">
-          <strong>Success:</strong> {submitSuccess}
+
+        <div className="row">
+          <label className="field">
+            <span>Min Buy-In ($)</span>
+            <input type="number" {...register("minBuyIn")} />
+          </label>
+          <label className="field">
+            <span>Max Buy-In ($)</span>
+            <input type="number" {...register("maxBuyIn")} />
+          </label>
         </div>
-      )}
-      <div className="row">
-        <label className="field">
-          <span>Game Type</span>
-          <select {...register("gameType")}>
-            <option value="TEXAS_HOLDEM">Texas Hold’em</option>
-            <option value="PLO">PLO</option>
-          </select>
-        </label>
 
-        <label className="field">
-          <span>Blinds</span>
-          <input
-            placeholder="e.g., 1/2, $1/2, or $1/$2"
-            {...register("blinds")}
-            onChange={handleBlindsChange}
+        <div className="row">
+          <label className="field">
+            <span>Start Time</span>
+            <input
+              type="datetime-local"
+              {...register("startTime")}
+              onClick={openDatePicker}
+              style={{ cursor: "pointer" }}
+            />
+          </label>
+          <label className="field">
+            <span>Address (private)</span>
+            <input
+              placeholder="Exact address (kept private)"
+              {...register("address")}
+            />
+            {errors.address && (
+              <em className="error">{errors.address.message}</em>
+            )}
+          </label>
+        </div>
+
+        <div className="row">
+          <label className="field">
+            <span>Latitude (optional)</span>
+            <input type="number" step="any" {...register("lat")} />
+          </label>
+          <label className="field">
+            <span>Longitude (optional)</span>
+            <input type="number" step="any" {...register("lng")} />
+          </label>
+        </div>
+
+        <label className="field full-width">
+          <span>Notes (optional)</span>
+          <textarea
+            rows={3}
+            placeholder="Any house rules, parking hints, etc."
+            {...register("notes")}
           />
-          {errors.blinds && <em className="error">{errors.blinds.message}</em>}
         </label>
-      </div>
 
-      <div className="row">
-        <label className="field">
-          <span>Min Buy-In ($)</span>
-          <input type="number" {...register("minBuyIn")} />
-        </label>
-        <label className="field">
-          <span>Max Buy-In ($)</span>
-          <input type="number" {...register("maxBuyIn")} />
-        </label>
-      </div>
-
-      <div className="row">
-        <label className="field">
-          <span>Start Time</span>
-          <input
-            type="datetime-local"
-            {...register("startTime")}
-            onClick={openDatePicker}
-            style={{ cursor: "pointer" }}
-          />
-        </label>
-        <label className="field">
-          <span>Address (private)</span>
-          <input
-            placeholder="Exact address (kept private)"
-            {...register("address")}
-          />
-          {errors.address && (
-            <em className="error">{errors.address.message}</em>
-          )}
-        </label>
-      </div>
-
-      <div className="row">
-        <label className="field">
-          <span>Latitude (optional)</span>
-          <input type="number" step="any" {...register("lat")} />
-        </label>
-        <label className="field">
-          <span>Longitude (optional)</span>
-          <input type="number" step="any" {...register("lng")} />
-        </label>
-      </div>
-
-      <label className="field">
-        <span>Notes (optional)</span>
-        <textarea
-          rows={3}
-          placeholder="Any house rules, parking hints, etc."
-          {...register("notes")}
-        />
-      </label>
-
-      <div className="actions">
-        <button
-          className="btn primary"
-          type="submit"
-          disabled={createGame.isPending}
-        >
-          {createGame.isPending ? "Creating…" : "Create Game"}
-        </button>
-      </div>
-    </form>
+        <div className="actions">
+          <button
+            className="btn primary"
+            type="submit"
+            disabled={createGame.isPending}
+          >
+            {createGame.isPending ? "Creating…" : "Create Game"}
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }

@@ -4,7 +4,7 @@
     --text:#e7e9ee;
     --muted:#98a2b3;
     --line:#232735;
-    --accent:#3b82f6;
+    --accent:#f97316;
     --accent-contrast:#ffffff;
     --danger:#ef4444;
   }
@@ -31,14 +31,38 @@
   .subtitle{ margin:6px 0 0; color:var(--muted); }
   
   .tabs{
-    display:flex; gap:8px; margin:20px 0 12px; border-bottom:1px solid var(--line);
+    display:flex; 
+    gap:0; 
+    margin:20px 0 12px; 
+    border-bottom:1px solid var(--line);
+    width:100%;
+    max-width:800px;
+    margin-left:auto;
+    margin-right:auto;
   }
   .tab{
-    appearance:none; border:none; background:none; color:var(--muted);
-    padding:12px 14px; cursor:pointer; border-bottom:2px solid transparent;
+    appearance:none; 
+    border:none; 
+    background:none; 
+    color:var(--muted);
+    padding:12px 20px; 
+    cursor:pointer; 
+    border-bottom:3px solid transparent;
+    flex:1;
+    font-size:16px;
+    font-weight:500;
+    transition:all 0.3s ease;
+    text-align:center;
+  }
+  .tab:hover{
+    background:rgba(249, 115, 22, 0.1);
+    color:var(--text);
   }
   .tab.active{
-    color:var(--text); border-bottom-color:var(--accent); font-weight:600;
+    color:var(--text); 
+    border-bottom-color:var(--accent); 
+    font-weight:700;
+    background:rgba(249, 115, 22, 0.15);
   }
   
   .content{ margin-top:16px; flex:1; }
@@ -49,10 +73,26 @@
   .panelRow{
     display:flex; gap:12px; align-items:end; flex-wrap:wrap;
   }
-  .field{ display:flex; flex-direction:column; gap:6px; min-width:180px; }
+  .field{ 
+    display:flex; 
+    flex-direction:column; 
+    gap:8px; 
+    min-width:200px; 
+    flex:1; 
+    max-width:280px; 
+  }
   .field input, .field select, .field textarea{
-    background:#0b0d12; color:var(--text); border:1px solid var(--line);
-    border-radius:8px; padding:10px 12px; outline:none;
+    background:#0b0d12; 
+    color:var(--text); 
+    border:1px solid var(--line);
+    border-radius:8px; 
+    padding:12px 14px; 
+    outline:none;
+    font-size:14px;
+    transition:border-color 0.2s ease;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{
+    border-color:var(--accent);
   }
   .field textarea{ resize:vertical; }
   .hint{ color:var(--muted); margin-left:auto; }
@@ -79,9 +119,27 @@
   }
   .btn:disabled{ opacity:0.6; cursor:not-allowed; }
   
-  .form{ background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; }
-  .row{ display:flex; gap:12px; flex-wrap:wrap; }
-  .actions{ margin-top:12px; display:flex; gap:10px; }
+  .form{ 
+    background:var(--card); 
+    border:1px solid var(--line); 
+    border-radius:12px; 
+    padding:24px; 
+    max-width:600px; 
+    margin:0 auto; 
+  }
+  .row{ 
+    display:flex; 
+    gap:16px; 
+    flex-wrap:wrap; 
+    justify-content:center; 
+    margin-bottom:16px; 
+  }
+  .actions{ 
+    margin-top:20px; 
+    display:flex; 
+    gap:12px; 
+    justify-content:center; 
+  }
   .error{ color:var(--danger); font-style:normal; }
   .error-message{
     background:#2d1b1b; border:1px solid var(--danger); border-radius:8px;
@@ -90,6 +148,45 @@
   .success-message{
     background:#1b2d1b; border:1px solid #22c55e; border-radius:8px;
     padding:12px 16px; margin-bottom:16px; color:#22c55e;
+  }
+  
+  /* Host Game Form Specific Styling */
+  .host-game-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  
+  .host-game-form {
+    width: 100%;
+    max-width: 700px;
+  }
+  
+  .host-game-form .row {
+    justify-content: center;
+    align-items: flex-start;
+  }
+  
+  .host-game-form .field {
+    margin-bottom: 8px;
+  }
+  
+  .host-game-form .field span {
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  
+  .host-game-form .field.full-width {
+    max-width: none;
+    width: 100%;
+  }
+  
+  .host-game-form .field.full-width textarea {
+    width: 100%;
+    min-height: 100px;
   }
   
   .footer{ margin-top:auto; padding-top:28px; color:var(--muted); }

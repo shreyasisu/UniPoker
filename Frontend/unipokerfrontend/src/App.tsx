@@ -2,11 +2,27 @@ import { useState } from "react";
 import Tabs from "./components/Tabs.tsx";
 import FindGame from "./pages/FindGame.tsx";
 import HostGame from "./pages/HostGame.tsx";
+import Login from "./components/Login.tsx";
+import Signup from "./components/Signup.tsx";
+import { useAuth } from "./context/AuthContext"; 
 import "./App.css";
 
 export default function App() {
+  const { isAuthenticated } = useAuth();
   const [activeTab, setActiveTab] = useState<"find" | "host">("find");
 
+  if (!isAuthenticated) {
+    // unauthenticated users: show login/signup choice
+    return (
+      <div className="container">
+        <h1>Welcome to UniPoker</h1>
+        <Login />
+        <Signup />
+      </div>
+    );
+  }
+
+  // authenticated users: main app
   return (
     <div className="container">
       <header className="appHeader">
