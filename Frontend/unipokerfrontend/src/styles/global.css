@@ -127,6 +127,29 @@
     max-width:600px; 
     margin:0 auto; 
   }
+  
+  /* Login and Signup forms should be wider */
+  .container .form {
+    max-width: 75vw;
+    width: 75%;
+    min-width: 400px;
+  }
+  
+  /* Make input fields wider in login/signup forms */
+  .container .auth-form .field {
+    min-width: 100%;
+    max-width: none;
+  }
+  
+  .container .auth-form .field input,
+  .container .auth-form .field textarea {
+    width: 100%;
+  }
+  
+  .container .form .field input,
+  .container .form .field textarea {
+    width: 100%;
+  }
   .row{ 
     display:flex; 
     gap:16px; 
@@ -190,4 +213,169 @@
   }
   
   .footer{ margin-top:auto; padding-top:28px; color:var(--muted); }
+  
+  /* Profile Menu Styles */
+  .profile-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  .profile-menu-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    background: var(--card);
+    border-right: 1px solid var(--line);
+    z-index: 999;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .profile-menu-sidebar.open {
+    transform: translateX(0);
+  }
+  
+  .profile-menu-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--line);
+    min-height: 80px;
+    position: relative;
+  }
+  
+  .profile-menu-header h3 {
+    margin: 0;
+    color: var(--text);
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+  }
+  
+  
+  .profile-menu-content {
+    flex: 1;
+    padding: 16px 0;
+  }
+  
+  .profile-menu-item {
+    margin-bottom: 4px;
+  }
+  
+  .profile-menu-button {
+    width: 100%;
+    background: none;
+    border: none;
+    color: var(--text);
+    padding: 16px 24px;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+    transition: all 0.2s ease;
+  }
+  
+  .profile-menu-button:hover {
+    background: var(--line);
+  }
+  
+  .profile-menu-icon {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+  }
+  
+  .profile-menu-footer {
+    margin-top: auto;
+    padding: 16px 0;
+    border-top: 1px solid var(--line);
+  }
+  
+  .profile-menu-logout {
+    width: 100%;
+    background: none;
+    border: none;
+    color: var(--danger);
+    padding: 16px 24px;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+    font-weight: 800;
+    transition: all 0.2s ease;
+
+  }
+  
+  .profile-menu-logout:hover {
+    background: rgba(239, 68, 68, 0.1);
+  }
+  
+  /* Menu Button */
+  .menu-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    color: var(--text);
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  .menu-button:hover {
+    background: var(--line);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+  
+  .menu-button-icon {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    width: 20px;
+    height: 16px;
+  }
+  
+  .menu-button-line {
+    width: 100%;
+    height: 2px;
+    background: var(--text);
+    transition: all 0.3s ease;
+  }
+  
+  .menu-button.open .menu-button-line:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+  
+  .menu-button.open .menu-button-line:nth-child(2) {
+    opacity: 0;
+  }
+  
+  .menu-button.open .menu-button-line:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
   
