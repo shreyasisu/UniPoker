@@ -64,7 +64,7 @@ export default function Signup({ onSwitchToLogin }: SignupProps) {
         <h1>UniPoker</h1>
       </header>
       <form
-        className="form"
+        className="form auth-form"
         style={{ marginTop: "24px" }}
         onSubmit={handleSubmit(onSubmit)}
         noValidate

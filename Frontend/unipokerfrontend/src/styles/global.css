@@ -80,6 +80,7 @@
     min-width:200px; 
     flex:1; 
     max-width:280px; 
+    padding-bottom: 10px;
   }
   .field input, .field select, .field textarea{
     background:#0b0d12; 
