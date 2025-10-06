@@ -1,13 +1,13 @@
 import { useState } from "react";
 import Tabs from "./components/Tabs.tsx";
 import FindGame from "./pages/FindGame.tsx";
-import HostGame from "./pages/HostGame.tsx";
 import Login from "./components/Login.tsx";
 import Signup from "./components/Signup.tsx";
 import MenuButton from "./components/MenuButton.tsx";
 import ProfileMenu from "./components/ProfileMenu.tsx";
 import { useAuth } from "./context/AuthContext";
 import "./App.css";
+import HostPage from "./pages/HostPage.tsx";
 
 export default function App() {
   const { isAuthenticated, logout } = useAuth();
@@ -65,7 +65,7 @@ export default function App() {
         />
 
         <main className="content">
-          {activeTab === "find" ? <FindGame /> : <HostGame />}
+          {activeTab === "find" ? <FindGame /> : <HostPage />}
         </main>
         <footer className="footer">
           <small>

@@ -7,13 +7,27 @@ const client = axios.create({
 });
 
 export const api = {
-  async createGame(body: CreateGameBody) {
-    const { data } = await client.post("/api/games", body);
+  async createGame(body: CreateGameBody, userId: number) {
+    const { data } = await client.post("/api/games", body, {
+      headers: {
+        'X-User-Id': userId.toString()
+      }
+    });
     return data;
   },
 
   async listGames(): Promise<GamePublicCard[]> {
     const { data } = await client.get("/api/games");
+    return data;
+  },
+
+  async hasHostedGame(userId: number): Promise<boolean> {
+    const { data } = await client.get(`/api/games/has-hosted/${userId}`);
+    return data;
+  },
+
+  async getHostedGame(userId: number): Promise<GamePublicCard> {
+    const { data } = await client.get(`/api/games/hosted/${userId}`);
     return data;
   },
   async login(data: { email: string; password: string }) {
@@ -25,5 +39,7 @@ export const api = {
     const res = await client.post("/auth/register", data);
     return res.data; // { message: string, userId: number }
   }
+
+  //add DeleteGame api
   
 };

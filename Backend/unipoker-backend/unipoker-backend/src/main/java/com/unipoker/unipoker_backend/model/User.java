@@ -23,4 +23,18 @@ public class User {
 
     @NotBlank
     private String passwordHash;  // store hashed password
+
+    @OneToOne(optional = true)
+    @JoinColumn(name = "game_id", referencedColumnName = "id", unique = true)
+    private Game hostedGame;
+
+
+    //may not need bc of getter and setter
+    public Game getHostedGame() {
+        return hostedGame;
+    }
+
+    public void setHostedGame(Game hostedGame) {
+        this.hostedGame = hostedGame;
+    }
 }

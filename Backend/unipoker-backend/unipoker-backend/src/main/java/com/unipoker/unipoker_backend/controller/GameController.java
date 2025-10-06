@@ -20,12 +20,22 @@ public class GameController {
     }
 
     @PostMapping
-    public GameResponse create(@Valid @RequestBody CreateGameRequest request) {
-        return service.createGame(request);
+    public GameResponse create(@Valid @RequestBody CreateGameRequest request, @RequestHeader("X-User-Id") Long userId) {
+        return service.createGame(request, userId);
     }
 
     @GetMapping
     public List<GameResponse> list() {
         return service.listGames();
+    }
+
+    @GetMapping("/hosted/{userId}")
+    public GameResponse getHostedGame(@PathVariable Long userId) {
+        return service.getHostedGame(userId);
+    }
+
+    @GetMapping("/has-hosted/{userId}")
+    public boolean hasHostedGame(@PathVariable Long userId) {
+        return service.hasHostedGame(userId);
     }
 }

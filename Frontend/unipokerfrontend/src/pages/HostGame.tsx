@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { api } from "../lib/api.ts";
+import { useAuth } from "../context/AuthContext.tsx";
 
 const schema = z.object({
   gameType: z.enum(["TEXAS_HOLDEM", "PLO"]),
@@ -14,20 +15,25 @@ const schema = z.object({
       /^\$?(\d+(?:\.\d+)?)\/?\$?(\d+(?:\.\d+)?)?$/,
       "Invalid format. Use: 1/2, $1/2, or $1/$2"
     ),
-  minBuyIn: z.coerce.number().min(1),
-  maxBuyIn: z.coerce.number().min(1),
+  minBuyIn: z.number().min(1),
+  maxBuyIn: z.number().min(1),
   startTime: z.string().min(1),
   address: z.string().min(1, "Required"), // stored privately on backend
-  lat: z.coerce.number().optional(),
-  lng: z.coerce.number().optional(),
+  lat: z.number().optional(),
+  lng: z.number().optional(),
   notes: z.string().optional(),
 });
 
 type FormData = z.infer<typeof schema>;
 
-export default function HostGame() {
+interface HostGameProps {
+  onGameCreated: () => void;
+}
+
+export default function HostGame({ onGameCreated }: HostGameProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
+  const { token } = useAuth();
 
   const {
     register,
@@ -78,9 +84,15 @@ export default function HostGame() {
   };
 
   const createGame = useMutation({
-    mutationFn: (data: FormData) => api.createGame(data),
+    mutationFn: (data: FormData) => {
+      if (!token) {
+        throw new Error("User not authenticated");
+      }
+      return api.createGame(data, parseInt(token));
+    },
     onSuccess: () => {
       alert("Game created!");
+      onGameCreated?.();
     },
   });
 
@@ -138,11 +150,17 @@ export default function HostGame() {
         <div className="row">
           <label className="field">
             <span>Min Buy-In ($)</span>
-            <input type="number" {...register("minBuyIn")} />
+            <input
+              type="number"
+              {...register("minBuyIn", { valueAsNumber: true })}
+            />
           </label>
           <label className="field">
             <span>Max Buy-In ($)</span>
-            <input type="number" {...register("maxBuyIn")} />
+            <input
+              type="number"
+              {...register("maxBuyIn", { valueAsNumber: true })}
+            />
           </label>
         </div>
 
@@ -171,11 +189,19 @@ export default function HostGame() {
         <div className="row">
           <label className="field">
             <span>Latitude (optional)</span>
-            <input type="number" step="any" {...register("lat")} />
+            <input
+              type="number"
+              step="any"
+              {...register("lat", { valueAsNumber: true })}
+            />
           </label>
           <label className="field">
             <span>Longitude (optional)</span>
-            <input type="number" step="any" {...register("lng")} />
+            <input
+              type="number"
+              step="any"
+              {...register("lng", { valueAsNumber: true })}
+            />
           </label>
         </div>
 

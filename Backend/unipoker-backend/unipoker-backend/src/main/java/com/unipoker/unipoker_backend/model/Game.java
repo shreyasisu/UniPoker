@@ -22,4 +22,8 @@ public class Game {
     private Double lat;
     private Double lng;
     private String notes;
+
+    private Long hostId;
+
+
 }
